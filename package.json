@@ -10,12 +10,15 @@
     "dist": "npm run clean && webpack --mode production",
     "clean": "rimraf dist/*",
     "test": "jest --watchAll --verbose",
-    "test-coverage": "jest --watchAll --verbose --coverage"
+    "test-coverage": "jest --watchAll --verbose --coverage",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "author": "Hsien W Wei",
   "license": "ISC",
   "dependencies": {
     "antd": "4.1.4",
+    "gh-pages": "3.2.0",
     "immer": "6.0.3",
     "is_js": "0.9.0",
     "moment": "2.24.0",
