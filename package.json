@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "homepage": "https://dyarleniber.github.io/react-workflow-gh-actions",
+  "homepage": "https://hsienw.github.io/starter-demo-page/",
   "scripts": {
     "build": "webpack --mode production",
     "start": "webpack-dev-server --mode development --progress --watch --hot",
