@@ -12,7 +12,7 @@
     "test": "jest --watchAll --verbose",
     "test-coverage": "jest --coverage",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "author": "Hsien W Wei",
   "license": "ISC",
