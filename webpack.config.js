@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     module: {
@@ -27,7 +27,7 @@ module.exports = {
                     'css-loader',
                     'postcss-loader',
                     {
-                        loader: "less-loader",
+                        loader: 'less-loader',
                         options: {
                             javascriptEnabled: true
                         }
@@ -63,6 +63,6 @@ module.exports = {
             }
         ),
         new MomentLocalesPlugin(),
-        new BundleAnalyzerPlugin()
+//         new BundleAnalyzerPlugin()
     ],
 };
