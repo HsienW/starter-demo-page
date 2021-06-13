@@ -10,7 +10,7 @@
     "dist": "npm run clean && webpack --mode production",
     "clean": "rimraf dist/*",
     "test": "jest --watchAll --verbose",
-    "test-coverage": "jest --watchAll --verbose --coverage",
+    "test-coverage": "jest --coverage",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
