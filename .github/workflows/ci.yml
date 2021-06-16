@@ -36,6 +36,12 @@ jobs:
 
     - name: Install dependencies
       run: npm install
+      
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
 
     - name: Run the tests and generate coverage report
       run: npm run test-coverage
