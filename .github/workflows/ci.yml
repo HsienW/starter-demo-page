@@ -44,7 +44,7 @@ jobs:
   build_test:
     name: Build test
 
-    needs: [ build_base ]
+    needs: [ base_test ]
 
     runs-on: ubuntu-latest
 
