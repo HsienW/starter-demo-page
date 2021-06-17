@@ -52,7 +52,6 @@ jobs:
             dist
             !dist/**/*.md
 
-
   upload-ut-codecov:
     name: Upload UT Codecov
 
@@ -66,13 +65,13 @@ jobs:
       - name: Archive code coverage results
        uses: actions/upload-artifact@v2
        with:
-          name: code-coverage-report
-          path: output/test/code-coverage.html
+         name: code-coverage-report
+         path: output/test/code-coverage.html
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
-         token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
 #
 
 #  build_test:
