@@ -2,19 +2,18 @@ name: CI/CD
 
 on:
   push:
-#    branches: /**
   pull_request:
-    branches: [ master ]
+    branches: [ development ]
 
 jobs:
-  build_base:
-    name: Build base
+  base_test:
+    name: Base test
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [ 12.x, 13.x ]
+        node-version: [ 12.x ]
 
     outputs:
       output1: ${{ steps.installed_dependencies.outputs }}
@@ -41,6 +40,20 @@ jobs:
       - name: Run the tests and generate coverage report
         run: npm run test-coverage
 
+  build_test:
+    name: Build test
+
+    needs: [ build_base ]
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 12.x ]
+
+    steps:
+      - name: Build
+        run: npm run build
 
 #  build_check_code:
 #    name: Build check code
