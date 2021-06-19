@@ -2,7 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches: [ '*' '!master' ]
+#    branches: [ '*' '!master' ]
 
   pull_request:
     branches: [ development ]
@@ -63,6 +63,8 @@ jobs:
   upload-ut-codecov:
     name: Upload UT Codecov
 
+    needs: [ build-test ]
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -70,14 +72,9 @@ jobs:
         node-version: [ 12.x ]
 
     steps:
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report
-          path: output/test/code-coverage.html
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
+        if: github.ref == 'refs/heads/master'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 #
