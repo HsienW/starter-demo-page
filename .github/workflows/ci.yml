@@ -53,9 +53,18 @@ jobs:
       - uses: actions/checkout@v2
       - name: Bump version and push tag
         id: tag_version
-        uses: mathieudutour/github-tag-action@v5.5
+        uses: mathieudutour/github-tag-action@v5.5\
+        if:
+          contains('
+          refs/heads/master
+          refs/heads/development
+          refs/heads/pre-production
+          refs/heads/production
+          ', github.ref)
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: master
+          pre_release_branches: production
 
 
 #  - name: Initialize CodeQL
