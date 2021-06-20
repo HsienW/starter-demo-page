@@ -3,8 +3,8 @@ name: CI/CD
 on:
   push:
 
-#  pull_request:
-#    branches: [ development ]
+  pull_request:
+    branches: [ development ]
 
 jobs:
   build-test:
@@ -57,14 +57,22 @@ jobs:
         #          || github.ref == 'refs/heads/master'
         #        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
+      - name: Get branch name
+        id: get_branch
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+
       - name: Create version and push tag
         uses: mathieudutour/github-tag-action@v5.5
         if: github.ref == 'refs/heads/development'
+          || github.ref == 'refs/heads/pre-production'
+          || github.ref == 'refs/heads/production'
+          || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: dev-
-          release_name: Release ${{ github.ref }}
-          release_branches: development.*
+          tag_prefix: eng:${{ steps.get_branch.outputs.branch }}
+#          release_name: Release ${{ github.ref }}
+#          release_branches: development.*
 #          pre_release_branches: pre-production
 
 #          - name: Get version and push tag
