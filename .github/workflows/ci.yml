@@ -54,31 +54,17 @@ jobs:
           #        id: version-name
           #        if: github.ref == 'refs/heads/pre-production'
           #          || github.ref == 'refs/heads/production'
-          #          || github.ref == 'refs/heads/master'
-          #        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
+        #          || github.ref == 'refs/heads/master'
+        #        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
-
-      - name: Set tag version name
-        uses: mathieudutour/github-tag-action@v5.5
-        if: github.ref == 'refs/heads/pre-production'
-          || github.ref == 'refs/heads/production'
-          || github.ref == 'refs/heads/master'
-        id: tag_version
+      - name: Create version and push tag
+        if: github.ref == 'refs/heads/development'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get version and push tag
-        uses: actions/create-release@v1
-        if: github.ref == 'refs/heads/pre-production'
-          || github.ref == 'refs/heads/production'
-          || github.ref == 'refs/heads/master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version-name.outputs.short_ref }}-${{ steps.tag_version.outputs.new_tag }}
-#          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
-#          body: ${{ steps.tag_version.outputs.changelog }}
-
+          tag_prefix: dev-
+          release_name: Release ${{ github.ref }}
+          release_branches: development.*
+#          pre_release_branches: pre-production
 
 #          - name: Get version and push tag
 #            id: tag_version
