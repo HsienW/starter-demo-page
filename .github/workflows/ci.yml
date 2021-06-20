@@ -61,13 +61,12 @@ jobs:
       - name: Get version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.ref == 'refs/heads/development'
           || github.ref == 'refs/heads/pre-production'
           || github.ref == 'refs/heads/production'
           || github.ref == 'refs/heads/master'
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           tag_prefix: echo ${{ steps.version_name.outputs.short_ref }}
 
       - name: Create a GitHub release
