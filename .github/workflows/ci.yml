@@ -59,17 +59,19 @@ jobs:
 
 
       - name: Set tag version name
-      - uses: actions/checkout@v2
-      - if: github.ref == 'refs/heads/pre-production'
+        uses: mathieudutour/github-tag-action@v5.5
+        if: github.ref == 'refs/heads/pre-production'
           || github.ref == 'refs/heads/production'
           || github.ref == 'refs/heads/master'
         id: tag_version
-        uses: mathieudutour/github-tag-action@v5.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get version and push tag
         uses: actions/create-release@v1
+        if: github.ref == 'refs/heads/pre-production'
+          || github.ref == 'refs/heads/production'
+          || github.ref == 'refs/heads/master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
