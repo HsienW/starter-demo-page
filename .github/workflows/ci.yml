@@ -58,7 +58,7 @@ jobs:
           || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ refs/heads/master}}-${{ github.ref }}
           release_name: Release ${{ github.ref }}
           release_branches: production.*,master
           pre_release_branches: pre-production
