@@ -50,25 +50,46 @@ jobs:
       - name: Build
         run: npm run build
 
+          #      - name: Set tag version name
+          #        id: version-name
+          #        if: github.ref == 'refs/heads/pre-production'
+          #          || github.ref == 'refs/heads/production'
+          #          || github.ref == 'refs/heads/master'
+          #        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
+
+
       - name: Set tag version name
-        id: version-name
-        if: github.ref == 'refs/heads/pre-production'
+      - uses: actions/checkout@v2
+      - if: github.ref == 'refs/heads/pre-production'
           || github.ref == 'refs/heads/production'
           || github.ref == 'refs/heads/master'
-        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
-
-      - name: Get version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.5
-        if: github.ref == 'refs/heads/pre-production'
-          || github.ref == 'refs/heads/production'
-          || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: echo ${{ steps.version-name.outputs.short_ref }}-${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          release_branches: production.*,master
-          pre_release_branches: pre-production
+
+      - name: Get version and push tag
+#        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version-name.outputs.short_ref }}-${{ steps.tag_version.outputs.new_tag }}
+#          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+#          body: ${{ steps.tag_version.outputs.changelog }}
+
+
+#          - name: Get version and push tag
+#            id: tag_version
+#            uses: mathieudutour/github-tag-action@v5.5
+#            if: github.ref == 'refs/heads/pre-production'
+#              || github.ref == 'refs/heads/production'
+#              || github.ref == 'refs/heads/master'
+#            with:
+#              github_token: ${{ secrets.GITHUB_TOKEN }}
+#              tag_name: echo ${{ steps.version-name.outputs.short_ref }}-${{ github.ref }}
+#              release_name: Release ${{ github.ref }}
+#              release_branches: production.*,master
+#              pre_release_branches: pre-production
 
 #  - name: Initialize CodeQL
 #    uses: github/codeql-action/init@v1
