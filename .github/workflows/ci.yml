@@ -50,23 +50,16 @@ jobs:
       - name: Build
         run: npm run build
 
-          #      - name: Set tag version name
-          #        id: version-name
-          #        if: github.ref == 'refs/heads/pre-production'
-          #          || github.ref == 'refs/heads/production'
-        #          || github.ref == 'refs/heads/master'
-        #        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
-
-      - name: Get branch name
-        id: get_branch
+      - name: Set tag version name
+        id: version-name
         if: github.ref == 'refs/heads/development'
           || github.ref == 'refs/heads/pre-production'
           || github.ref == 'refs/heads/production'
           || github.ref == 'refs/heads/master'
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
-      - name: Create version and push tag
+      - name: Get version and push tag
+        id: tag_version
         uses: mathieudutour/github-tag-action@v5.5
         if: github.ref == 'refs/heads/development'
           || github.ref == 'refs/heads/pre-production'
@@ -74,23 +67,32 @@ jobs:
           || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: ${{ steps.get_branch.outputs.branch }}
+          tag_prefix: echo ${{ steps.version-name.outputs.short_ref }}
+          release_name: Release ${{ github.ref }}
+          release_branches: production.*,master
+          pre_release_branches: pre-production
+
+#      - name: Get branch name
+#        id: get_branch
+#        if: github.ref == 'refs/heads/development'
+#          || github.ref == 'refs/heads/pre-production'
+#          || github.ref == 'refs/heads/production'
+#          || github.ref == 'refs/heads/master'
+#        shell: bash
+#        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+#
+#      - name: Create version and push tag
+#        uses: mathieudutour/github-tag-action@v5.5
+#        if: github.ref == 'refs/heads/development'
+#          || github.ref == 'refs/heads/pre-production'
+#          || github.ref == 'refs/heads/production'
+#          || github.ref == 'refs/heads/master'
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          tag_prefix: ${{ steps.get_branch.outputs.branch }}
 #          release_name: Release ${{ github.ref }}
 #          release_branches: development.*
 #          pre_release_branches: pre-production
-
-#          - name: Get version and push tag
-#            id: tag_version
-#            uses: mathieudutour/github-tag-action@v5.5
-#            if: github.ref == 'refs/heads/pre-production'
-#              || github.ref == 'refs/heads/production'
-#              || github.ref == 'refs/heads/master'
-#            with:
-#              github_token: ${{ secrets.GITHUB_TOKEN }}
-#              tag_name: echo ${{ steps.version-name.outputs.short_ref }}-${{ github.ref }}
-#              release_name: Release ${{ github.ref }}
-#              release_branches: production.*,master
-#              pre_release_branches: pre-production
 
 #  - name: Initialize CodeQL
 #    uses: github/codeql-action/init@v1
