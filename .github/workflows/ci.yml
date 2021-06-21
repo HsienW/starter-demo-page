@@ -66,36 +66,37 @@ jobs:
       #          || github.ref == 'refs/heads/master'
       #        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
-      - name: Create version tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.5
+#      - name: Create version tag
+#        id: tag_version
+#        uses: mathieudutour/github-tag-action@v5.5
+#        if: github.ref == 'refs/heads/development'
+#          || github.ref == 'refs/heads/pre-production'
+#          || github.ref == 'refs/heads/production'
+#          || github.ref == 'refs/heads/master'
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.26.0
         if: github.ref == 'refs/heads/development'
           || github.ref == 'refs/heads/pre-production'
           || github.ref == 'refs/heads/production'
           || github.ref == 'refs/heads/master'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push a GitHub version tag
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: github.ref == 'refs/heads/development'
-          || github.ref == 'refs/heads/pre-production'
-          || github.ref == 'refs/heads/production'
-        with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          RELEASE_BRANCHES: release.*,hotfix.*,master
+          WITH_V: true
 
-      - name: Push a GitHub release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: github.ref == 'refs/heads/master'
-        with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag }}
-          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
-          pre_release_branches: production
+#      - name: Push a GitHub release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        if: github.ref == 'refs/heads/master'
+#        with:
+#          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+#          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+#          body: ${{ steps.tag_version.outputs.changelog }}
+#          pre_release_branches: production
 
       - name: Deploy
         if: github.ref == 'refs/heads/master'
