@@ -84,7 +84,7 @@ jobs:
           || github.ref == 'refs/heads/master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCHES: release.*,hotfix.*,master
+          RELEASE_BRANCHES: release.*,hotfix.*,master,development,pre-production,production
           WITH_V: true
 
 #      - name: Push a GitHub release
