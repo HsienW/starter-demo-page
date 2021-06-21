@@ -67,7 +67,7 @@ jobs:
           || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
+          tag_prefix: dev-
 
       - name: Create a GitHub release
         uses: actions/create-release@v1
