@@ -47,18 +47,26 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+
       - name: Build
         run: npm run build
 
-#      - name: Set tag version name
-#        id: version_name
-#        if: github.ref == 'refs/heads/development'
-#          || github.ref == 'refs/heads/pre-production'
-#          || github.ref == 'refs/heads/production'
-#          || github.ref == 'refs/heads/master'
-#        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
+      #      - name: Set tag version name
+      #        id: version_name
+      #        if: github.ref == 'refs/heads/development'
+      #          || github.ref == 'refs/heads/pre-production'
+      #          || github.ref == 'refs/heads/production'
+      #          || github.ref == 'refs/heads/master'
+      #        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
-      - name: Get version and push tag
+      - name: Create version tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.5
         if: github.ref == 'refs/heads/development'
@@ -67,20 +75,40 @@ jobs:
           || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-#          tag_prefix: dev-
 
-      - name: Create a GitHub release
+      - name: Push a GitHub version tag
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.ref == 'refs/heads/development'
           || github.ref == 'refs/heads/pre-production'
           || github.ref == 'refs/heads/production'
-          || github.ref == 'refs/heads/master'
         with:
           tag_name: ${{ steps.tag_version.outputs.new_tag }}
-#          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+
+      - name: Push a GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: github.ref == 'refs/heads/master'
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
+          pre_release_branches: production
+
+      - name: Deploy
+        if: github.ref == 'refs/heads/master'
+        run: |
+          git config --global user.name $user_name
+          git config --global user.email $user_email
+          git remote set-url origin https://${github_token}@github.com/${repository}
+          npm run deploy
+        env:
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
+          repository: ${{ github.repository }}
 
 
 #      - name: Get branch name
