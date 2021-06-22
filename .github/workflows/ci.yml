@@ -4,7 +4,7 @@ on:
   push:
 
   pull_request:
-    branches: [ development ]
+    branches: [ development pre-production production ]
 
 jobs:
   build-test:
@@ -43,7 +43,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/production'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -68,11 +68,8 @@ jobs:
         if: github.ref == 'refs/heads/development'
           || github.ref == 'refs/heads/pre-production'
           || github.ref == 'refs/heads/production'
-          || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-#          custom_tag: ${{ steps.set_tag_name.outputs.short_ref }}
-          tag_prefix: ${{ steps.set_tag_name.outputs.short_ref }}
 
       - name: Create a GitHub release
         uses: actions/create-release@v1
@@ -85,7 +82,7 @@ jobs:
           body: ${{ steps.tag_version.outputs.changelog }}
 
       - name: Deploy
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/production'
         run: |
           git config --global user.name $user_name
           git config --global user.email $user_email
