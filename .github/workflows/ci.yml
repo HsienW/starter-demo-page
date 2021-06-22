@@ -58,25 +58,25 @@ jobs:
       - name: Build
         run: npm run build
 
-#      - name: Set tag version name
-#        id: version_name
-#        if: github.ref == 'refs/heads/development'
-#          || github.ref == 'refs/heads/pre-production'
-#          || github.ref == 'refs/heads/production'
-#          || github.ref == 'refs/heads/master'
-#        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
-
-      - name: Push version tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.5
+      - name: Set tag version name
+        id: version_name
         if: github.ref == 'refs/heads/development'
           || github.ref == 'refs/heads/pre-production'
           || github.ref == 'refs/heads/production'
           || github.ref == 'refs/heads/master'
+        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
+
+      - name: Push version tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.5
+#        if: github.ref == 'refs/heads/development'
+#          || github.ref == 'refs/heads/pre-production'
+#          || github.ref == 'refs/heads/production'
+#          || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: release.*,master,development,pre-production,production
-          tag_prefix: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
+          tag_prefix: ${{ steps.version_name.outputs.branch }}
 
       #      - name: Bump version and push tag
       #        uses: anothrNick/github-tag-action@1.26.0
