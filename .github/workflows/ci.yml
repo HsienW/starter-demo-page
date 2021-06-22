@@ -71,7 +71,8 @@ jobs:
           || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ steps.set_tag_name.outputs.short_ref }}
+#          custom_tag: ${{ steps.set_tag_name.outputs.short_ref }}
+          tag_prefix: ${{ steps.set_tag_name.outputs.short_ref }}
 
       - name: Create a GitHub release
         uses: actions/create-release@v1
