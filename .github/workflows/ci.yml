@@ -58,48 +58,28 @@ jobs:
       - name: Build
         run: npm run build
 
-#      - name: Set tag version name
-#        id: version_name
-#        if: github.ref == 'refs/heads/development'
-#          || github.ref == 'refs/heads/pre-production'
-#          || github.ref == 'refs/heads/production'
-#          || github.ref == 'refs/heads/master'
-#        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
-
-      - name: Push version tag
+      - name: Get version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.5
-#        if: github.ref == 'refs/heads/development'
-#          || github.ref == 'refs/heads/pre-production'
-#          || github.ref == 'refs/heads/production'
-#          || github.ref == 'refs/heads/master'6
+        if: github.ref == 'refs/heads/development'
+          || github.ref == 'refs/heads/pre-production'
+          || github.ref == 'refs/heads/production'
+          || github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: release.*,master,development,pre-production,production
-#          tag_prefix: ${{ steps.version_name.outputs.branch }}
 
-      #      - name: Bump version and push tag
-      #        uses: anothrNick/github-tag-action@1.26.0
-      #        if: github.ref == 'refs/heads/development'
-      #          || github.ref == 'refs/heads/pre-production'
-      #          || github.ref == 'refs/heads/production'
-      #          || github.ref == 'refs/heads/master'
-      #        env:
-      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #          RELEASE_BRANCHES: release.*,hotfix.*,master,development,pre-production,production
-      #          WITH_V: true
-      #          new_tag: ${{ steps.tag_version.outputs.new_tag }}
-
-      #      - name: Push a GitHub release
-      #        uses: actions/create-release@v1
-      #        env:
-      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #        if: github.ref == 'refs/heads/master'
-      #        with:
-      #          tag_name: ${{ steps.tag_version.outputs.new_tag }}
-      #          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
-      #          body: ${{ steps.tag_version.outputs.changelog }}
-      #          pre_release_branches: production
+      - name: Create a GitHub release
+        uses: actions/create-release@v1
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: github.ref == 'refs/heads/development'
+          || github.ref == 'refs/heads/pre-production'
+          || github.ref == 'refs/heads/production'
+          || github.ref == 'refs/heads/master'
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
 
       - name: Deploy
         if: github.ref == 'refs/heads/master'
@@ -113,46 +93,3 @@ jobs:
           user_email: 'github-actions[bot]@users.noreply.github.com'
           github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
           repository: ${{ github.repository }}
-
-
-#      - name: Get branch name
-#        id: get_branch
-#        if: github.ref == 'refs/heads/development'
-#          || github.ref == 'refs/heads/pre-production'
-#          || github.ref == 'refs/heads/production'
-#          || github.ref == 'refs/heads/master'
-#        shell: bash
-#        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-#
-#      - name: Create version and push tag
-#        uses: mathieudutour/github-tag-action@v5.5
-#        if: github.ref == 'refs/heads/development'
-#          || github.ref == 'refs/heads/pre-production'
-#          || github.ref == 'refs/heads/production'
-#          || github.ref == 'refs/heads/master'
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          tag_prefix: ${{ steps.get_branch.outputs.branch }}
-#          release_name: Release ${{ github.ref }}
-#          release_branches: development.*
-#          pre_release_branches: pre-production
-
-#  - name: Initialize CodeQL
-#    uses: github/codeql-action/init@v1
-#    with:
-#      languages: javascript
-
-#  - name: Perform CodeQL Analysis
-#    uses: github/codeql-action/analyze@v1
-
-#  - name: Deploy
-#      run: |
-#        git config --global user.name $user_name
-#        git config --global user.email $user_email
-#        git remote set-url origin https://${github_token}@github.com/${repository}
-#        npm run deploy
-#      env:
-#        user_name: 'github-actions[bot]'
-#        user_email: 'github-actions[bot]@users.noreply.github.com'
-#        github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
-#        repository: ${{ github.repository }}
