@@ -4,7 +4,7 @@ on:
   push:
 
   pull_request:
-    branches: [ development pre-production production ]
+    branches: [ development, pre-production, production ]
 
 jobs:
   build-test:
