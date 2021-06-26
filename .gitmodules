@@ -1,0 +1,3 @@
+[submodule "starter-demo-page-sub-a"]
+	path = starter-demo-page-sub-a
+	url = git@github.com:HsienW/starter-demo-page-sub-a.git
