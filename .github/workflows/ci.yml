@@ -4,7 +4,11 @@ on:
   push:
 
   pull_request:
-    branches: [ development, pre-production, production ]
+    branches:
+      - development
+      - pre-production
+      - production
+      - master
 
 jobs:
   build-test:
@@ -74,7 +78,7 @@ jobs:
       - name: Create a GitHub release
         uses: actions/create-release@v1
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.ref == 'refs/heads/production'
         with:
           tag_name: ${{ steps.tag_version.outputs.new_tag }}
