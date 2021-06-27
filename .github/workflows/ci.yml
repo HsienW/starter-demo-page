@@ -5,8 +5,8 @@ on:
 
   pull_request:
     branches:
-      - development
-      - pre-production
+#      - development
+#      - pre-production
       - production
       - master
 
