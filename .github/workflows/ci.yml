@@ -87,7 +87,7 @@ jobs:
 
       - name: Deploy to AWS S3 bucket
 #        id: deploy_to_bucket
-        uses: chrislennon/action-aws-cli@v1.2
+        uses: chrislennon/action-aws-cli@v1.1
 
       - name: Update AWS S3 bucket with dist folder
         run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
