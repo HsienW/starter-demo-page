@@ -95,7 +95,7 @@ jobs:
 
       - name: Copy files to AWS S3 bucket
         run: |
-          aws s3 sync . s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
+          aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
 
 #      - name: Update AWS S3 bucket with dist folder
 #        run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
