@@ -34,7 +34,7 @@ export const Main = () => {
                         <Route path={'/page2'}>
                             <Page2 />
                         </Route>
-                        <Route path={'/page2'}>
+                        <Route path={'/page3'}>
                             <Page3 />
                         </Route>
                     </Switch>
