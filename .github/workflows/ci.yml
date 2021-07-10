@@ -2,11 +2,13 @@ name: CI/CD
 
 on:
   push:
+    branches:
+      - "sub/*"
+      - "feature/*"
+      - "fix/*"
 
   pull_request:
     branches:
-      #      - development
-      #      - pre-production
       - production
       - master
 
@@ -87,6 +89,7 @@ jobs:
 
 
       - name: Configure AWS credentials
+        if: github.ref == 'refs/heads/production'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
