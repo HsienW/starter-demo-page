@@ -2,11 +2,13 @@ name: CI/CD
 
 on:
   push:
+    branches:
+      - "sub/*"
+      - "feature/*"
+      - "fix/*"
 
   pull_request:
     branches:
-      #      - development
-      #      - pre-production
       - production
       - master
 
@@ -87,6 +89,7 @@ jobs:
 
 
       - name: Configure AWS credentials
+        if: github.ref == 'refs/heads/production'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -108,17 +111,19 @@ jobs:
 #        uses: chetan/invalidate-cloudfront-action@master
 #        env:
 #          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_ID }}
-#          PATHS: '/index.html'
+#          PATHS: '/index.html /main.js /main.js.gz /vendors~main.js /vendors~main.js.gz'
 #          AWS_REGION: 'us-east-1'
 #          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
 #          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name:  Sync AWS S3 bucket
+        if: github.ref == 'refs/heads/production'
         run: |
           aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
 
       - name: Update AWS cloudfront cache with S3 bucket
-        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/index.html"
+        if: github.ref == 'refs/heads/production'
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/*"
         env:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
