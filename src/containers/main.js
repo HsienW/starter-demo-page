@@ -12,6 +12,7 @@ export const Main = () => {
             <h2>Super update test 2</h2>
             <h2>Super update test 3</h2>
             <h2>Super update test 4</h2>
+            <h2>Super update test 5</h2>
             <Router>
                 <div>
                     <nav>
