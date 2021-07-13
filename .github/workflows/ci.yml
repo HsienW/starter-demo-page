@@ -2,10 +2,10 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - "sub/*"
-      - "feature/*"
-      - "fix/*"
+#    branches:
+#      - "sub/*"
+#      - "feature/*"
+#      - "fix/*"
 
   pull_request:
     branches:
@@ -50,7 +50,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
-        if: github.ref == 'refs/heads/development'
+        if: github.head_ref == 'refs/heads/development'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
