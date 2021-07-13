@@ -9,9 +9,9 @@ on:
 
   pull_request:
     branches:
-      - development
+#      - development
       - production
-      - master
+#      - master
 
 jobs:
   build-test:
@@ -52,7 +52,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
-        if: github.ref == 'refs/heads/development'
+        if: github.ref == 'refs/heads/production'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
