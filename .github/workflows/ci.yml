@@ -2,10 +2,10 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - "sub/*"
-      - "feature/*"
-      - "fix/*"
+#    branches:
+#      - "sub/*"
+#      - "feature/*"
+#      - "fix/*"
 
   pull_request:
     branches:
