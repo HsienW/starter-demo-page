@@ -48,9 +48,11 @@ jobs:
       - name: Run the tests and generate coverage report
         run: npm run test-coverage
 
+#      - name: test
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
-        if: github.head_ref == 'refs/heads/development'
+        if: github.ref == 'refs/heads/development'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
