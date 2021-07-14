@@ -2,14 +2,14 @@ name: CI/CD
 
 on:
   push:
-#    branches:
-#      - "sub/*"
-#      - "feature/*"
-#      - "fix/*"
+  #    branches:
+  #      - "sub/*"
+  #      - "feature/*"
+  #      - "fix/*"
 
   pull_request:
     branches:
-#      - development
+      #      - development
       - production
 #      - master
 
@@ -90,9 +90,9 @@ jobs:
         if: github.ref == 'refs/heads/production'
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Sync AWS S3 bucket
         if: github.ref == 'refs/heads/production'
