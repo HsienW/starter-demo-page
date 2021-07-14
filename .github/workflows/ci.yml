@@ -48,8 +48,6 @@ jobs:
       - name: Run the tests and generate coverage report
         run: npm run test-coverage
 
-#      - name: test
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         if: github.ref == 'refs/heads/production'
@@ -73,61 +71,62 @@ jobs:
 
       - name: Get version and push tag
         id: tag_version
-        uses: mathieudutour/github-tag-action@v5.5
         if: github.ref == 'refs/heads/production'
+        uses: mathieudutour/github-tag-action@v5.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create a GitHub release
+        if: github.ref == 'refs/heads/production'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: github.ref == 'refs/heads/production'
         with:
           tag_name: ${{ steps.tag_version.outputs.new_tag }}
           release_name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
-
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/production'
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
 
-#      - name: Sync AWS S3 bucket
-#        uses: jakejarvis/s3-sync-action@2fb81a9e9fea11e078587911c27754e42e6a6e88
-#        with:
-#          args: --exclude '.git*/*' --delete --follow-symlinks
-#        env:
-#          SOURCE_DIR: './dist'
-#          AWS_REGION: 'us-east-1'
-#          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET_NAME }}
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#
-#      - name: Update AWS Cloudfront cache with S3 bucket
-#        uses: chetan/invalidate-cloudfront-action@master
-#        env:
-#          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_ID }}
-#          PATHS: '/index.html /main.js /main.js.gz /vendors~main.js /vendors~main.js.gz'
-#          AWS_REGION: 'us-east-1'
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name:  Sync AWS S3 bucket
+      - name: Sync AWS S3 bucket
         if: github.ref == 'refs/heads/production'
-        run: |
-          aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
+        uses: jakejarvis/s3-sync-action@2fb81a9e9fea11e078587911c27754e42e6a6e88
+        with:
+          args: --exclude '.git*/*' --delete --follow-symlinks
+        env:
+          SOURCE_DIR: './dist'
+          AWS_REGION: 'us-east-1'
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Update AWS cloudfront cache with S3 bucket
         if: github.ref == 'refs/heads/production'
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/*"
         env:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+          #
+          #      - name: Update AWS Cloudfront cache with S3 bucket
+          #        uses: chetan/invalidate-cloudfront-action@master
+          #        env:
+          #          DISTRIBUTION: ${{ secrets.AWS_DISTRIBUTION_ID }}
+          #          PATHS: '/index.html /main.js /main.js.gz /vendors~main.js /vendors~main.js.gz'
+          #          AWS_REGION: 'us-east-1'
+          #          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          #          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+          #      - name:  Sync AWS S3 bucket
+          #        if: github.ref == 'refs/heads/production'
+          #        run: |
+          #          aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
 
 #      - name: Deploy
 #        if: github.ref == 'refs/heads/production'
