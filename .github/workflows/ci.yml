@@ -2,15 +2,16 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - "sub/*"
-      - "feature/*"
-      - "fix/*"
+#    branches:
+#      - "sub/*"
+#      - "feature/*"
+#      - "fix/*"
 
   pull_request:
     branches:
+#      - development
       - production
-      - master
+#      - master
 
 jobs:
   build-test:
@@ -47,12 +48,11 @@ jobs:
       - name: Run the tests and generate coverage report
         run: npm run test-coverage
 
+#      - name: test
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
-        if:
-          contains('
-          refs/heads/production
-          ', github.ref)
+        if: github.ref == 'refs/heads/production'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
